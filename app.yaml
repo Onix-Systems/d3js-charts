@@ -2,5 +2,12 @@ runtime: php55
 api_version: 1
 
 handlers:
-- url: /
-  script: index.html
+# Serve images as static resources.
+- url: /(.+\.(gif|png|jpg))$
+  static_files: \1
+  upload: .+\.(gif|png|jpg)$
+  application_readable: true
+
+# Serve php scripts.
+- url: /(.+\.php)$
+  script: \1
