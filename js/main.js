@@ -1,10 +1,13 @@
 d3.json('test.json',function (json) {
     var dataset = json;
+    var position = 0,
+        timeStamp = 0;
     updateDropDown();
     
     function drawStackedChart() {
         d3.select("svg").remove();
         $("#draw-stacked-chart").addClass('hidden');
+        position = 0;
         var n = parseInt(_.maxBy(dataset, 'id').id), // number of layers
             m = _.uniqBy(dataset, 'category').length, // number of samples per layer
             maxNum = parseInt(_.maxBy(dataset, 'num').num),
@@ -128,10 +131,12 @@ d3.json('test.json',function (json) {
                 return {x: parseInt(d.category), y: parseInt(d.num)};
             });
         }
+        scrollDetect();
     }
 
     function drawLineChart(category_id) {
         d3.select("svg").remove();
+        position = category_id;
         $("#draw-stacked-chart").removeClass('hidden');
         var height = 500,
             width = 960,
@@ -217,7 +222,7 @@ d3.json('test.json',function (json) {
                     .duration(500)
                     .style("opacity", 0);
             });
-
+        scrollDetect();
     }
     drawStackedChart();
 
@@ -236,4 +241,22 @@ d3.json('test.json',function (json) {
         .on("click", function() {
             drawStackedChart()
         });
+
+    function scrollDetect() {
+        $("svg").mousewheel(function(event, delta) {
+            if(event.timeStamp - timeStamp > 1000 || timeStamp == 0){
+                timeStamp = event.timeStamp;
+                if(delta > 0 && position < _.uniqBy(dataset, 'category').length){
+                    drawLineChart(position + 1);
+                }else if (delta < 0){
+                    if(position > 1){
+                        drawLineChart(position - 1);
+                    }else if(position == 1){
+                        drawStackedChart();
+                    }
+                }
+            }
+            event.preventDefault();
+        });
+    }
 });
