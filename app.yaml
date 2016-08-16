@@ -9,9 +9,9 @@ handlers:
   application_readable: true
   
 # Files from sub directories
-- url: /js/(.+\.(js|json))$
-  static_files: \1
-  application_readable: true
+- url: /js
+  static_dir: js
+  
 
 # Serve php scripts.
 - url: /
