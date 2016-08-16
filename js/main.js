@@ -1,6 +1,7 @@
 d3.json('test.json',function (json) {
     var dataset = json;
-
+    updateDropDown();
+    
     function drawStackedChart() {
         d3.select("svg").remove();
         $("#draw-stacked-chart").addClass('hidden');
@@ -11,8 +12,6 @@ d3.json('test.json',function (json) {
             layers = stack(d3.range(n).map(function(i) { return bumpLayer(i+1); })),
             yGroupMax = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y; }); }),
             yStackMax = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y0 + d.y; }); });
-
-        updateDropDown();
 
         var margin = {top: 40, right: 10, bottom: 20, left: 40},
             width = 960 - margin.left - margin.right,
