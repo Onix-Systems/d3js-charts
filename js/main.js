@@ -3,6 +3,7 @@ d3.json('test.json',function (json) {
 
     function drawStackedChart() {
         d3.select("svg").remove();
+        $("#draw-stacked-chart").addClass('hidden');
         var n = parseInt(_.maxBy(dataset, 'id').id), // number of layers
             m = _.uniqBy(dataset, 'category').length, // number of samples per layer
             maxNum = parseInt(_.maxBy(dataset, 'num').num),
@@ -132,6 +133,7 @@ d3.json('test.json',function (json) {
 
     function drawLineChart(category_id) {
         d3.select("svg").remove();
+        $("#draw-stacked-chart").removeClass('hidden');
         var height = 500,
             width = 960,
             margin = 30,
@@ -178,15 +180,45 @@ d3.json('test.json',function (json) {
                 "translate(" + margin + "," + margin + ")")
             .call(yAxis);
 
-// функция, создающая по массиву точек линии
         var line = d3.svg.line()
             .x(function(d){return d.x;})
             .y(function(d){return d.y;});
-// добавляем путь
+        var points = [];
+        var div = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+        data.forEach(function (elem) {
+           points.push([elem.x,elem.y])
+        });
+
         svg.append("g").append("path")
+            .data([points])
             .attr("d", line(data))
             .style("stroke", "steelblue")
             .style("stroke-width", 2);
+
+        svg.selectAll(".point")
+            .data(rawData)
+            .enter().append("circle")
+            .attr("r", 4)
+            .attr("transform", function(d) {
+                return "translate(" + [scaleX(d.id)+margin,scaleY(d.num)+margin] + ")";
+            })
+            .on("mouseover", function(d) {
+                console.log(d);
+                div.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+                div	.html(d.num)
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
+            })
+            .on("mouseout", function(d) {
+                div.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+            });
+
     }
     drawStackedChart();
 
@@ -200,5 +232,9 @@ d3.json('test.json',function (json) {
         .on("click", function() {
             var date = this.getAttribute("value");
             drawLineChart(date)
+        });
+    d3.select("#draw-stacked-chart")
+        .on("click", function() {
+            drawStackedChart()
         });
 });
