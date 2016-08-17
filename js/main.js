@@ -135,7 +135,7 @@ d3.json('test.json',function (json) {
     }
 
     function drawLineChart(category_id) {
-        d3.select("svg").remove();
+        d3.selectAll("svg").remove();
         position = category_id;
         $("#draw-stacked-chart").removeClass('hidden');
         var height = 500,
@@ -224,8 +224,71 @@ d3.json('test.json',function (json) {
             });
         scrollDetect();
     }
-    drawStackedChart();
+    
+    function drawBoxChart() {
+        d3.select("svg").remove();
+        $("#draw-stacked-chart").addClass('hidden');
+        var margin = {top: 10, right: 50, bottom: 20, left: 50},
+            width = 120 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
 
+        var min = Infinity,
+            max = -Infinity;
+
+        var chart = d3.box()
+            .whiskers(iqr(1.5))
+            .width(width)
+            .height(height);
+
+        if(dataset) {
+
+            var data = [];
+            dataset.forEach(function(x) {
+                var e = Math.floor(x.category - 1),
+                    r = Math.floor(x.id - 1),
+                    s = Math.floor(x.num),
+                    d = data[e];
+                if (!d) d = data[e] = [s];
+                else d.push(s);
+                if (s > max) max = s;
+                if (s < min) min = s;
+            });
+
+            chart.domain([min, max]);
+
+            var svg = d3.select("body").selectAll("svg")
+                .data(data)
+                .enter().append("svg")
+                .attr("class", "box")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.bottom + margin.top)
+                .attr('data-id', function (d,i) {return i+1;})
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                .call(chart);
+
+            d3.selectAll(".box").on('click',function () {
+                var category_id = this.getAttribute("data-id");
+                drawLineChart(category_id);
+            });
+        }
+        
+        function iqr(k) {
+            return function(d, i) {
+                var q1 = d.quartiles[0],
+                    q3 = d.quartiles[2],
+                    iqr = (q3 - q1) * k,
+                    i = -1,
+                    j = d.length;
+                while (d[++i] < q1 - iqr);
+                while (d[--j] > q3 + iqr);
+                return [i, j];
+            };
+        }
+        scrollDetect();
+    }
+    // drawStackedChart();
+    drawBoxChart();
     function updateDropDown(){
         for(var i = 1; i <= _.uniqBy(dataset, 'category').length; i++){
             $("#category-dropdown").append( '<li><a class="m" href="#" value="'+i+'">' + i + '</a></li>' );
@@ -239,7 +302,7 @@ d3.json('test.json',function (json) {
         });
     d3.select("#draw-stacked-chart")
         .on("click", function() {
-            drawStackedChart()
+            drawBoxChart()
         });
 
     function scrollDetect() {
@@ -252,7 +315,7 @@ d3.json('test.json',function (json) {
                     if(position > 1){
                         drawLineChart(position - 1);
                     }else if(position == 1){
-                        drawStackedChart();
+                        drawBoxChart();
                     }
                 }
             }
