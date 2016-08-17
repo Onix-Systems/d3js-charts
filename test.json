@@ -2,6 +2,22 @@
   {"category":"1","id":"1", "num":"50"},
   {"category":"1","id":"2", "num":"40"},
   {"category":"1","id":"3", "num":"40"},
-  {"category":"2","id":"1", "num":"45"},
-  {"category":"2","id":"2", "num":"35"}
+
+  {"category":"2","id":"1", "num":"50"},
+  {"category":"2","id":"2", "num":"30"},
+  {"category":"2","id":"3", "num":"45"},
+
+  {"category":"3","id":"1", "num":"10"},
+  {"category":"3","id":"2", "num":"20"},
+  {"category":"3","id":"3", "num":"30"},
+  {"category":"3","id":"4", "num":"50"},
+
+  {"category":"4","id":"1", "num":"15"},
+  {"category":"4","id":"2", "num":"35"},
+  {"category":"4","id":"3", "num":"45"},
+  {"category":"4","id":"4", "num":"55"},
+
+  {"category":"5","id":"1", "num":"40"},
+  {"category":"5","id":"2", "num":"45"},
+  {"category":"5","id":"3", "num":"35"}
 ]

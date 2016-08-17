@@ -1,4 +1,4 @@
-d3.json('test.json',function (json) {
+d3.json(config.json_url,function (json) {
     var dataset = json;
     var position = 0,
         timeStamp = 0;
@@ -43,7 +43,7 @@ d3.json('test.json',function (json) {
             .tickPadding(5)
             .orient("bottom");
 
-        var svg = d3.select("body").append("svg")
+        var svg = d3.select("body").select(".main-container").append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom + 20)
             .append("g")
@@ -136,15 +136,15 @@ d3.json('test.json',function (json) {
 
     function drawLineChart(category_id) {
         d3.selectAll("svg").remove();
-        position = category_id;
+        position = parseInt(category_id);
         $("#draw-stacked-chart").removeClass('hidden');
         var height = 500,
             width = 960,
-            margin = 30,
+            margin = 45,
             rawData = _.filter(dataset, {'category':category_id.toString()}),
             data=[];
 
-        var svg = d3.select("body").append("svg")
+        var svg = d3.select("body").select(".main-container").append("svg")
             .attr("class", "axis")
             .attr("width", width)
             .attr("height", height);
@@ -188,7 +188,7 @@ d3.json('test.json',function (json) {
             .x(function(d){return d.x;})
             .y(function(d){return d.y;});
         var points = [];
-        var div = d3.select("body").append("div")
+        var div = d3.select("body").select(".main-container").append("div")
             .attr("class", "tooltip")
             .style("opacity", 0);
         data.forEach(function (elem) {
@@ -222,57 +222,135 @@ d3.json('test.json',function (json) {
                     .duration(500)
                     .style("opacity", 0);
             });
+        svg.append("text")
+            .attr("transform","rotate(-90)")
+            .attr("y", 0)
+            .attr("x", 0-(height/2))
+            .attr("dy","1em")
+            .attr("style","font-size:15px")
+            .text("num");
+
+        svg.append("text")
+            .attr("class","xtext")
+            .attr("x",width/2)
+            .attr("y",height)
+            .attr("text-anchor","middle")
+            .attr("style","font-size:15px")
+            .text("id");
         scrollDetect();
     }
     
     function drawBoxChart() {
         d3.select("svg").remove();
         $("#draw-stacked-chart").addClass('hidden');
-        var margin = {top: 10, right: 50, bottom: 20, left: 50},
-            width = 120 - margin.left - margin.right,
-            height = 500 - margin.top - margin.bottom;
+        position = 0;
+        var labels = true; // show the text labels beside individual boxplots?
+
+        var margin = {top: 30, right: 50, bottom: 70, left: 50};
+        var  width = 960 - margin.left - margin.right;
+        var height = 500 - margin.top - margin.bottom;
 
         var min = Infinity,
             max = -Infinity;
 
-        var chart = d3.box()
-            .whiskers(iqr(1.5))
-            .width(width)
-            .height(height);
-
-        if(dataset) {
+        // parse in the data
+        if (dataset) {
+            // using an array of arrays with
+            // data[n][2]
+            // where n = number of columns in the csv file
+            // data[i][0] = name of the ith column
+            // data[i][1] = array of values of ith column
 
             var data = [];
-            dataset.forEach(function(x) {
-                var e = Math.floor(x.category - 1),
-                    r = Math.floor(x.id - 1),
-                    s = Math.floor(x.num),
-                    d = data[e];
-                if (!d) d = data[e] = [s];
-                else d.push(s);
-                if (s > max) max = s;
-                if (s < min) min = s;
-            });
 
-            chart.domain([min, max]);
+            // add more rows if your csv file has more columns
+            for(var i = 0; i <= _.uniqBy(dataset, 'category').length-1; i++){
+                data[i] = [];
+                data[i][0] = i+1;
+                data[i][1] = [];
+            }
+            for(var i = 0; i <= _.uniqBy(dataset, 'id').length-1; i++){
+                var rowData = _.filter(dataset,{'id': (i+1).toString()});
+                rowData.forEach(function (d,c) {
+                    data[c][1].push(Math.floor(d.num));
+                });
 
-            var svg = d3.select("body").selectAll("svg")
-                .data(data)
-                .enter().append("svg")
-                .attr("class", "box")
+
+                var rowMax = parseInt(_.maxBy(rowData,'num').num);
+                var rowMin = parseInt(_.minBy(rowData,'num').num);
+
+                if (rowMax > max) max = rowMax;
+                if (rowMin < min) min = rowMin;
+            }
+            var chart = d3.box()
+                .whiskers(iqr(1.5))
+                .height(height)
+                .domain([min, max])
+                .showLabels(labels);
+
+            var svg = d3.select("body").select('.main-container').append("svg")
                 .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.bottom + margin.top)
-                .attr('data-id', function (d,i) {return i+1;})
+                .attr("height", height + margin.top + margin.bottom)
+                .attr("class", "box")
                 .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-                .call(chart);
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-            d3.selectAll(".box").on('click',function () {
-                var category_id = this.getAttribute("data-id");
-                drawLineChart(category_id);
-            });
+            // the x-axis
+            var x = d3.scale.ordinal()
+                .domain( data.map(function(d) { return d[0] } ) )
+                .rangeRoundBands([0 , width], 0.7, 0.3);
+
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom");
+
+            // the y-axis
+            var y = d3.scale.linear()
+                .domain([min, max])
+                .range([height + margin.top, 10 + margin.top]);
+
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left");
+
+            // draw the boxplots
+            svg.selectAll(".box")
+                .data(data)
+                .enter().append("g")
+                .attr('data-id', function (d) {
+                    return d[0]
+                })
+                .attr("transform", function(d) { return "translate(" +  x(d[0])  + "," + margin.top + ")"; } )
+                .call(chart.width(x.rangeBand()));
+
+            // draw y axis
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+                .append("text") // and text1
+                .attr("transform", "rotate(-90)")
+                .attr("y", 0-margin.left)
+                .attr("x", 0-(height/2)+margin.top)
+                .attr("dy", ".71em")
+                .style("text-anchor", "end")
+                .style("font-size", "16px")
+                .text("num interquartile");
+
+            // draw x axis
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + (height  + margin.top + 10) + ")")
+                .call(xAxis)
+                .append("text")             // text label for the x axis
+                .attr("x", (width / 2) )
+                .attr("y",  15 )
+                .attr("dy", ".71em")
+                .style("text-anchor", "middle")
+                .style("font-size", "16px")
+                .text("Category");
         }
-        
+
+        // Returns a function to compute the interquartile range.
         function iqr(k) {
             return function(d, i) {
                 var q1 = d.quartiles[0],
@@ -285,6 +363,13 @@ d3.json('test.json',function (json) {
                 return [i, j];
             };
         }
+        d3.selectAll("g").on('click',function () {
+            var category_id = this.getAttribute("data-id");
+            if(category_id){
+                drawLineChart(category_id);
+            }
+
+        });
         scrollDetect();
     }
     // drawStackedChart();

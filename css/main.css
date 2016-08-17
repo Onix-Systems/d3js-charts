@@ -48,3 +48,15 @@ div.tooltip {
     fill: none;
     stroke: #ccc;
 }
+.header-container{
+    padding: 0 10px;
+}
+.main-container{
+    margin-top: 60px;
+    padding-top: 30px;
+}
+svg{
+    margin: 0 auto;
+    position: relative;
+    display: block;
+}
