@@ -1,5 +1,7 @@
 <?php
-if($_GET['url']){
+$json = file_get_contents($_GET['url']);
+print_r($json);
+/* if($_GET['url']){
     $ch = curl_init($_GET['url']);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $json = '';
@@ -15,5 +17,5 @@ if($_GET['url']){
 }else{
     print_r('Url is required');
 }
-
+*/
 ?>
