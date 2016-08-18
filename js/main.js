@@ -90,7 +90,6 @@ $.ajax({
                         return "translate(" + [scaleX(d.id)+margin,scaleY(d.num)+margin] + ")";
                     })
                     .on("mouseover", function(d) {
-                        console.log(d);
                         div.transition()
                             .duration(200)
                             .style("opacity", .9);
@@ -145,10 +144,10 @@ $.ajax({
                     var data = [];
 
                     // add more rows if your csv file has more columns
-                    for(var i = 0; i <= _.uniqBy(showData, 'category').length-1; i++){
-                        data[i] = [];
-                        data[i][0] = i+1+skip;
-                        data[i][1] = [];
+                    for(var i = 1; i <= _.uniqBy(showData, 'category').length; i++){
+                        data[i-1] = [];
+                        data[i-1][0] = i+skip;
+                        data[i-1][1] = [];
                     }
                     for(var i = 0; i <= _.uniqBy(showData, 'id').length-1; i++){
                         var rowData = _.filter(showData,{'id': (i+1).toString()});
@@ -199,7 +198,7 @@ $.ajax({
                         .data(data)
                         .enter().append("g")
                         .attr('data-id', function (d) {
-                            return (d[0]+skip);
+                            return (d[0]);
                         })
                         .attr("transform", function(d) { return "translate(" +  x(d[0])  + "," + margin.top + ")"; } )
                         .call(chart.width(x.rangeBand()));
@@ -247,7 +246,6 @@ $.ajax({
                 d3.selectAll("g").on('click',function () {
                     var category_id = this.getAttribute("data-id");
                     if(category_id){
-                        console.log(category_id);
                         drawLineChart(category_id);
                     }
 
