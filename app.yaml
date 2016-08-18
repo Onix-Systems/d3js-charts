@@ -17,3 +17,6 @@ handlers:
 # Serve php scripts.
 - url: /
   script: index.html
+  
+- url: /getJson.php
+  script: getJson.php
