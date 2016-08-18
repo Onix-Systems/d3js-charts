@@ -17,7 +17,17 @@
   {"category":"4","id":"3", "num":"45"},
   {"category":"4","id":"4", "num":"55"},
 
-  {"category":"5","id":"1", "num":"40"},
-  {"category":"5","id":"2", "num":"45"},
-  {"category":"5","id":"3", "num":"35"}
+  {"category":"5","id":"1", "num":"15"},
+  {"category":"5","id":"2", "num":"35"},
+  {"category":"5","id":"3", "num":"45"},
+  {"category":"5","id":"4", "num":"55"},
+
+  {"category":"6","id":"1", "num":"15"},
+  {"category":"6","id":"2", "num":"35"},
+  {"category":"6","id":"3", "num":"45"},
+  {"category":"6","id":"4", "num":"55"},
+
+  {"category":"7","id":"1", "num":"40"},
+  {"category":"7","id":"2", "num":"45"},
+  {"category":"7","id":"3", "num":"35"}
 ]
