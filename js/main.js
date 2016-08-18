@@ -270,6 +270,7 @@ $.ajax({
             $(".main-chart svg").mousewheel(function(event, delta) {
                 if(event.timeStamp - timeStamp > 800 || timeStamp == 0){
                     timeStamp = event.timeStamp;
+                    console.log(_.uniqBy(dataset,'category').length);
                     if((skip+limit) != _.uniqBy(dataset,'category').length){
                         if(delta > 0){
                             skip++;
@@ -279,7 +280,7 @@ $.ajax({
                             drawBoxChart(skip)
                         }
                     }
-                    else if(delta < 0){
+                    else if(delta < 0 && skip != 0){
                         skip--;
                         drawBoxChart(skip)
                     }
