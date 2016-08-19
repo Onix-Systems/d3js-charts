@@ -52,11 +52,33 @@ div.tooltip {
     padding: 0 10px;
 }
 .main-container{
-    margin-top: 60px;
-    padding-top: 30px;
+    padding-bottom: 50px;
 }
 svg{
     margin: 0 auto;
     position: relative;
     display: block;
+}
+.well.run-label{
+    text-align: center;
+    font-weight: bold;
+    border-radius: 0;
+    padding-top: 79px;
+}
+.well.run-label span{
+    text-transform: capitalize;
+}
+.chart-container{
+    padding-bottom: 50px;
+    border: 1px solid #000000;
+}
+.chart-container .navbar{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.chart-container rect{
+    cursor: pointer;
+}
+.metric-dropdown{
+    text-transform: capitalize;
 }
