@@ -6,7 +6,7 @@
       "metrics" : ["speed", "val"],
       "drill_down_metric":[
         {
-          "speed" : "line_chart",
+          "speed" : "bar_chart",
           "val" : "line_chart"
         }],
       "aggregated_metric":[

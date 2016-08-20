@@ -18,6 +18,7 @@ $.ajax({
                 } catch (e) {
                     alert(resp);
                 }
+                
                 var dataset = [];
                 configJson.runs.forEach(function (d) {
                     dataset.push(_.filter(JSON.parse(resp),{"run_name":d})[0])
@@ -34,8 +35,10 @@ $.ajax({
                     updateDropDown();
 
                     function drawLineChart(game, index) {
-                        d3.select('.shoe-chart[data-index="' + index + '"]').select('.chart-container').selectAll("svg").remove();
+                        d3.select('.shoe-chart[data-index="' + index + '"]')
+                            .select('.chart-container').selectAll("svg").remove();
                         $('.back-btn[data-index="' + index + '"]').removeClass('hidden');
+
                         var height = 500,
                             width = 960,
                             margin = 45,
@@ -43,6 +46,7 @@ $.ajax({
                             data = [],
                             minTime = parseTime(rawData[0].Ts),
                             maxTime = parseTime(rawData[0].Ts);
+
                         rawData.forEach(function (d) {
                             if (parseTime(d.Ts) > maxTime) {
                                 maxTime = parseTime(d.Ts)
@@ -50,7 +54,10 @@ $.ajax({
                                 minTime = parseTime(d.Ts)
                             }
                         });
-                        var svg = d3.select('.shoe-chart[data-index="' + index + '"]').select('.chart-container').append("svg")
+
+                        var svg = d3.select('.shoe-chart[data-index="' + index + '"]')
+                            .select('.chart-container')
+                            .append("svg")
                             .attr("class", "axis")
                             .attr("width", width)
                             .attr("height", height);
@@ -100,6 +107,7 @@ $.ajax({
                             .y(function (d) {
                                 return d.y;
                             });
+
                         var points = [];
                         var div = d3.select('.shoe-chart[data-index="' + index + '"]').select('.chart-container').append("div")
                             .attr("class", "tooltip")
@@ -134,6 +142,7 @@ $.ajax({
                                     .duration(500)
                                     .style("opacity", 0);
                             });
+
                         svg.append("text")
                             .attr("transform", "rotate(-90)")
                             .attr("y", 0)
@@ -149,6 +158,14 @@ $.ajax({
                             .attr("text-anchor", "middle")
                             .attr("style", "font-size:15px")
                             .text("time");
+
+                        d3.selectAll("g.y-axis g.tick")
+                            .append("line")
+                            .classed("grid-line", true)
+                            .attr("x1", 0)
+                            .attr("y1", 0)
+                            .attr("x2", xAxisLength)
+                            .attr("y2", 0);
                     }
 
                     function drawBoxChart(shoe, index) {
@@ -156,7 +173,7 @@ $.ajax({
                         $('.back-btn[data-index="' + index + '"]').addClass('hidden');
                         var labels = true; // show the text labels beside individual boxplots?
 
-                        var margin = {top: 30, right: 50, bottom: 70, left: 50};
+                        var margin = {top: 30, right: 50, bottom: 90, left: 50};
                         var width = 960 - margin.left - margin.right;
                         var height = 500 - margin.top - margin.bottom;
 
@@ -245,11 +262,19 @@ $.ajax({
                                 .call(xAxis)
                                 .append("text")             // text label for the x axis
                                 .attr("x", (width / 2))
-                                .attr("y", 15)
+                                .attr("y", 35)
                                 .attr("dy", ".71em")
                                 .style("text-anchor", "middle")
                                 .style("font-size", "16px")
                                 .text("game");
+
+                            d3.selectAll("g.y.axis g.tick")
+                                .append("line")
+                                .classed("grid-line", true)
+                                .attr("x1", 0)
+                                .attr("y1", 0)
+                                .attr("x2", width)
+                                .attr("y2", 0);
                         }
 
                         // Returns a function to compute the interquartile range.
@@ -271,16 +296,22 @@ $.ajax({
                             var game = this.getAttribute("data-id");
                             if (game) {
                                 var index = $(this).closest('.shoe-chart').data('index');
-                                drawLineChart(game, index);
+                                if(run_config.drill_down_metric[0][current_metric] == "line_chart"){
+                                    drawLineChart(game, index);
+                                }else{
+                                    drawBarChart(game, index);
+                                }
                             }
 
                         });
                     }
 
-                    function drawBarChart(shoe, index) {
-                        d3.select('.shoe-chart[data-index="' + index + '"]').select('.chart-container').selectAll("svg").remove();
+                    function drawStackedBarChart(shoe, index) {
+                        d3.select('.shoe-chart[data-index="' + index + '"]')
+                            .select('.chart-container').selectAll("svg").remove();
                         var n = 0;// number of layers
                         $('.back-btn[data-index="' + index + '"]').addClass('hidden');
+
                         shoe.game_array.forEach(function (d, i) {
                             if (d.metric_array.length > n) {
                                 n = d.metric_array.length
@@ -302,7 +333,7 @@ $.ajax({
                                 });
                             });
 
-                        var margin = {top: 30, right: 50, bottom: 70, left: 50},
+                        var margin = {top: 30, right: 50, bottom: 90, left: 50},
                             width = 960 - margin.left - margin.right,
                             height = 500 - margin.top - margin.bottom;
 
@@ -377,7 +408,7 @@ $.ajax({
                             .call(xAxis)
                             .append("text")             // text label for the x axis
                             .attr("x", (width / 2))
-                            .attr("y", 15)
+                            .attr("y", 35)
                             .attr("dy", ".71em")
                             .style("text-anchor", "middle")
                             .style("font-size", "16px")
@@ -396,6 +427,14 @@ $.ajax({
                             .style("font-size", "16px")
                             .text(current_metric);
 
+                        d3.selectAll("g.y.axis g.tick")
+                            .append("line")
+                            .classed("grid-line", true)
+                            .attr("x1", 0)
+                            .attr("y1", 0)
+                            .attr("x2", width)
+                            .attr("y2", 0);
+
                         function bumpLayer(i) {
 
                             var a = [];
@@ -412,16 +451,120 @@ $.ajax({
                             var game = this.getAttribute("data-id");
                             if (game) {
                                 var index = $(this).closest('.shoe-chart').data('index');
-                                drawLineChart(game, index);
+                                if(run_config.drill_down_metric[0][current_metric] == "line_chart"){
+                                    drawLineChart(game, index);
+                                }else{
+                                    drawBarChart(game, index);
+                                }
                             }
 
                         });
+                    }
+
+                    function drawBarChart(game, index) {
+                        d3.select('.shoe-chart[data-index="' + index + '"]')
+                            .select('.chart-container').selectAll("svg").remove();
+                        $('.back-btn[data-index="' + index + '"]').removeClass('hidden');
+
+                        var margin = {top: 30, right: 20, bottom: 70, left: 50},
+                            width = 960 - margin.left - margin.right,
+                            height = 500 - margin.top - margin.bottom;
+
+                        var rawData = _.find(dataset[current_run].Shoe_array[index].game_array, {'game_name': game}).metric_array;
+
+                        var	parseDate = d3.time.format("%I:%M:%S").parse;
+
+                        var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+
+                        var y = d3.scale.linear().range([height, 0]);
+
+                        var xAxis = d3.svg.axis()
+                            .scale(x)
+                            .orient("bottom")
+                            .tickFormat(d3.time.format("%I:%M:%S"));
+
+                        var yAxis = d3.svg.axis()
+                            .scale(y)
+                            .orient("left")
+                            .ticks(10);
+
+                        var svg = d3.select('.shoe-chart[data-index="' + index + '"]')
+                            .select('.chart-container')
+                            .append("svg")
+                            .attr("width", width + margin.left + margin.right)
+                            .attr("height", height + margin.top + margin.bottom)
+                            .append("g")
+                            .attr("transform",
+                                "translate(" + margin.left + "," + margin.top + ")");
+
+                        if(rawData){
+                            rawData.forEach(function(d) {
+                                d.Ts = parseDate(d.Ts);
+                                d[current_metric] = +d[current_metric];
+                            });
+
+                            x.domain(rawData.map(function(d) { return d.Ts; }));
+                            y.domain([0, d3.max(rawData, function(d) { return d[current_metric]; })]);
+
+                            svg.append("g")
+                                .attr("class", "x axis")
+                                .attr("transform", "translate(0," + height + ")")
+                                .call(xAxis)
+                                .selectAll("text")
+                                .style("text-anchor", "end")
+                                .attr("dx", "-.8em")
+                                .attr("dy", "-.55em")
+                                .attr("transform", "rotate(-90)" );
+
+                            svg.append("g")
+                                .attr("class", "y axis")
+                                .call(yAxis)
+                                .append("text")
+                                .attr("transform", "rotate(-90)")
+                                .attr("y", 6)
+                                .attr("dy", ".71em")
+                                .style("text-anchor", "end");
+
+                            svg.selectAll("bar")
+                                .data(rawData)
+                                .enter().append("rect")
+                                .style("fill", "steelblue")
+                                .attr("x", function(d) { return x(d.Ts); })
+                                .attr("width", x.rangeBand())
+                                .attr("y", function(d) { return y(d[current_metric]); })
+                                .attr("height", function(d) { return height - y(d[current_metric]); });
+
+                            svg.append("text")
+                                .attr("transform", "rotate(-90)")
+                                .attr("y", 0-margin.left)
+                                .attr("x", 0 - (height / 2))
+                                .attr("dy", "1em")
+                                .attr("style", "font-size:15px")
+                                .text(current_metric);
+
+                            svg.append("text")
+                                .attr("class", "xtext")
+                                .attr("x", width / 2)
+                                .attr("y", height+margin.bottom)
+                                .attr("text-anchor", "middle")
+                                .attr("style", "font-size:15px")
+                                .text("time");
+
+                            d3.selectAll("g.y.axis g.tick")
+                                .append("line")
+                                .classed("grid-line", true)
+                                .attr("x1", 0)
+                                .attr("y1", 0)
+                                .attr("x2", width)
+                                .attr("y2", 0);
+                        }
                     }
 
                     function updateDropDown() {
                         dataset.forEach(function (d, i) {
                             $("#category-dropdown").append('<li><a class="m" href="#" value="' + i + '">' + d.run_name + '</a></li>');
                         });
+                        $('#run-dropdown').html(dataset[current_run].run_name+' <span class="caret"></span></a>');
                     }
 
                     d3.selectAll(".m")
@@ -430,6 +573,7 @@ $.ajax({
                             current_run = date;
                             run_config = _.find(configJson.mapping,{'run_name':dataset[current_run].run_name});
                             $('.run-label span').html(dataset[date].run_name);
+                            $('#run-dropdown').html(dataset[date].run_name+' <span class="caret"></span></a>');
                             drawShoes(dataset[date])
                         });
 
@@ -463,28 +607,30 @@ $.ajax({
                             if(run_config.aggregated_metric[0][current_metric] == "box_chart"){
                                 drawBoxChart(d, i)
                             }else{
-                                drawBarChart(d, i)
+                                drawStackedBarChart(d, i)
                             }
                         });
+                        
                         $(".back-btn")
                             .on("click", function () {
                                 var index = $(this).data('index');
                                 if(run_config.aggregated_metric[0][current_metric] == "box_chart"){
                                     drawBoxChart(run.Shoe_array[index], index)
                                 }else{
-                                    drawBarChart(run.Shoe_array[index], index)
+                                    drawStackedBarChart(run.Shoe_array[index], index)
                                 }
                             });
+                        
                         run_config.metrics.forEach(function (d, i) {
                             $(".metric-select ul").append('<li><a class="metric_select" href = "javascript:void(0);" value="'+d+'">'+d+'</a></li>');
                         });
+                        
                         $(".metric_select")
                             .on("click", function () {
                                 current_metric = this.getAttribute("value");
                                 drawShoes(dataset[current_run])
                             });
                     }
-
                     drawShoes(dataset[0]);
                 }
             }

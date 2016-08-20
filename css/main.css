@@ -1,3 +1,9 @@
+body{
+    font-family: 'Roboto', sans-serif;
+}
+h2{
+    font-family: 'Roboto', sans-serif;
+}
 .axis path,
 .axis line {
     fill: none;
@@ -13,7 +19,9 @@
 .dot {
     stroke: #000;
 }
-
+.axis .grid-line{
+    opacity: 0.1;
+}
 div.tooltip {
     position: absolute;
     text-align: center;
@@ -79,6 +87,6 @@ svg{
 .chart-container rect{
     cursor: pointer;
 }
-.metric-dropdown, .metric-select li a{
+.metric-dropdown, .metric-select li a, #run-dropdown{
     text-transform: capitalize;
 }
