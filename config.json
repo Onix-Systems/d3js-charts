@@ -3,6 +3,7 @@
   "mapping":[
     {
       "run_name":"run1",
+      "metrics" : ["speed", "val"],
       "drill_down_metric":[
         {
           "speed" : "line_chart",
@@ -16,6 +17,7 @@
     },
     {
       "run_name":"run2",
+      "metrics" : ["speed", "val"],
       "drill_down_metric": [
         {
           "speed" : "line_chart",

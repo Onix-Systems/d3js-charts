@@ -79,6 +79,6 @@ svg{
 .chart-container rect{
     cursor: pointer;
 }
-.metric-dropdown{
+.metric-dropdown, .metric-select li a{
     text-transform: capitalize;
 }

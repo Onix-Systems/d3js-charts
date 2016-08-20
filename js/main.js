@@ -25,8 +25,8 @@ $.ajax({
 
                 if (dataset) {
                     var current_run = 0,
-                        current_metric = 'speed',
-                        run_config = _.find(configJson.mapping,{'run_name':dataset[current_run].run_name});
+                        run_config = _.find(configJson.mapping,{'run_name':dataset[current_run].run_name}),
+                        current_metric = run_config.metrics[0];
                     var formatTime = d3.timeFormat("%I:%M:%S");
                     var parseTime = d3.timeParse("%I:%M:%S");
                     $('.run-label span').html(dataset[0].run_name);
@@ -430,15 +430,15 @@ $.ajax({
                             current_run = date;
                             run_config = _.find(configJson.mapping,{'run_name':dataset[current_run].run_name});
                             $('.run-label span').html(dataset[date].run_name);
-                            drawShoes(dataset[date], current_metric)
+                            drawShoes(dataset[date])
                         });
 
                     d3.select("#draw-stacked-chart")
                         .on("click", function () {
-                            drawShoes(dataset[current_run], current_metric)
+                            drawShoes(dataset[current_run])
                         });
 
-                    function drawShoes(run, metric) {
+                    function drawShoes(run) {
                         $('.main-container').empty();
                         run.Shoe_array.forEach(function (d, i) {
                             $('.main-container').append('<div class="shoe-chart" data-index="' + i + '">' +
@@ -451,58 +451,41 @@ $.ajax({
                                 '</li>'+
                                 '</ul>' +
                                 '<ul class="nav navbar-nav navbar-right">' +
-                                '<li class="dropdown">' +
+                                '<li class="dropdown metric-select">' +
                                 '<a class="dropdown-toggle metric-dropdown" data-toggle="dropdown" href = "javascript:void(0);">'+current_metric+' <span class="caret"></span></a>' +
-                                '<ul class="dropdown-menu" id="category-dropdown">' +
-                                '<li><a class="metric_select" href = "javascript:void(0);" value="speed">Speed</a></li>' +
-                                '<li><a class="metric_select" href = "javascript:void(0);" value="val">Val</a></li>' +
+                                '<ul class="dropdown-menu">' +
                                 '</ul>' +
                                 '</li>' +
                                 '</ul>' +
                                 '</div>' +
                                 '</div>' +
                                 '</div>');
-
-                            if (metric == 'speed') {
-                                if(run_config.aggregated_metric[0].speed == "box_chart"){
-                                    drawBoxChart(d, i)
-                                }else{
-                                    drawBarChart(d, i)
-                                }
-                            } else if(metric == 'val') {
-                                if(run_config.aggregated_metric[0].val == "box_chart"){
-                                    drawBoxChart(d, i)
-                                }else{
-                                    drawBarChart(d, i)
-                                }
+                            if(run_config.aggregated_metric[0][current_metric] == "box_chart"){
+                                drawBoxChart(d, i)
+                            }else{
+                                drawBarChart(d, i)
                             }
                         });
-                        $(".metric_select")
-                            .on("click", function () {
-                                var date = this.getAttribute("value");
-                                current_metric = date;
-                                drawShoes(dataset[current_run], date)
-                            });
                         $(".back-btn")
                             .on("click", function () {
                                 var index = $(this).data('index');
-                                if (current_metric == 'speed') {
-                                    if(run_config.aggregated_metric[0].speed == "box_chart"){
-                                        drawBoxChart(run.Shoe_array[index], index)
-                                    }else{
-                                        drawBarChart(run.Shoe_array[index], index)
-                                    }
-                                } else if(current_metric == 'val') {
-                                    if(run_config.aggregated_metric[0].val == "box_chart"){
-                                        drawBoxChart(run.Shoe_array[index], index)
-                                    }else{
-                                        drawBarChart(run.Shoe_array[index], index)
-                                    }
+                                if(run_config.aggregated_metric[0][current_metric] == "box_chart"){
+                                    drawBoxChart(run.Shoe_array[index], index)
+                                }else{
+                                    drawBarChart(run.Shoe_array[index], index)
                                 }
+                            });
+                        run_config.metrics.forEach(function (d, i) {
+                            $(".metric-select ul").append('<li><a class="metric_select" href = "javascript:void(0);" value="'+d+'">'+d+'</a></li>');
+                        });
+                        $(".metric_select")
+                            .on("click", function () {
+                                current_metric = this.getAttribute("value");
+                                drawShoes(dataset[current_run])
                             });
                     }
 
-                    drawShoes(dataset[0], current_metric);
+                    drawShoes(dataset[0]);
                 }
             }
         })
