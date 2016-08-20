@@ -35,7 +35,7 @@ $.ajax({
 
                     function drawLineChart(game, index) {
                         d3.select('.shoe-chart[data-index="' + index + '"]').select('.chart-container').selectAll("svg").remove();
-                        $('#draw-stacked-chart').removeClass('hidden');
+                        $('.back-btn[data-index="' + index + '"]').removeClass('hidden');
                         var height = 500,
                             width = 960,
                             margin = 45,
@@ -153,7 +153,7 @@ $.ajax({
 
                     function drawBoxChart(shoe, index) {
                         d3.select('.shoe-chart[data-index="' + index + '"]').select('.chart-container').selectAll("svg").remove();
-                        $('#draw-stacked-chart').addClass('hidden');
+                        $('.back-btn[data-index="' + index + '"]').addClass('hidden');
                         var labels = true; // show the text labels beside individual boxplots?
 
                         var margin = {top: 30, right: 50, bottom: 70, left: 50};
@@ -278,8 +278,9 @@ $.ajax({
                     }
 
                     function drawBarChart(shoe, index) {
+                        d3.select('.shoe-chart[data-index="' + index + '"]').select('.chart-container').selectAll("svg").remove();
                         var n = 0;// number of layers
-                        $('#draw-stacked-chart').addClass('hidden');
+                        $('.back-btn[data-index="' + index + '"]').addClass('hidden');
                         shoe.game_array.forEach(function (d, i) {
                             if (d.metric_array.length > n) {
                                 n = d.metric_array.length
@@ -444,9 +445,14 @@ $.ajax({
                                 '<h2>' + run.run_name + '.' + d.shoe_name + '</h2>' +
                                 '<div class="chart-container">' +
                                 '<div class="navbar navbar-default navbar-static-top">' +
+                                '<ul class="nav navbar-nav">'+
+                                '<li>'+
+                                '<a href = "javascript:void(0);" class="hidden back-btn" data-index="' + i + '">Back</a>'+
+                                '</li>'+
+                                '</ul>' +
                                 '<ul class="nav navbar-nav navbar-right">' +
                                 '<li class="dropdown">' +
-                                '<a class="dropdown-toggle metric-dropdown" data-toggle="dropdown" href="#">'+current_metric+' <span class="caret"></span></a>' +
+                                '<a class="dropdown-toggle metric-dropdown" data-toggle="dropdown" href = "javascript:void(0);">'+current_metric+' <span class="caret"></span></a>' +
                                 '<ul class="dropdown-menu" id="category-dropdown">' +
                                 '<li><a class="metric_select" href = "javascript:void(0);" value="speed">Speed</a></li>' +
                                 '<li><a class="metric_select" href = "javascript:void(0);" value="val">Val</a></li>' +
@@ -476,6 +482,23 @@ $.ajax({
                                 var date = this.getAttribute("value");
                                 current_metric = date;
                                 drawShoes(dataset[current_run], date)
+                            });
+                        $(".back-btn")
+                            .on("click", function () {
+                                var index = $(this).data('index');
+                                if (current_metric == 'speed') {
+                                    if(run_config.aggregated_metric[0].speed == "box_chart"){
+                                        drawBoxChart(run.Shoe_array[index], index)
+                                    }else{
+                                        drawBarChart(run.Shoe_array[index], index)
+                                    }
+                                } else if(current_metric == 'val') {
+                                    if(run_config.aggregated_metric[0].val == "box_chart"){
+                                        drawBoxChart(run.Shoe_array[index], index)
+                                    }else{
+                                        drawBarChart(run.Shoe_array[index], index)
+                                    }
+                                }
                             });
                     }
 
