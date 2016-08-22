@@ -3,15 +3,20 @@
 <head>
     <meta charset="utf-8">
     <title>D3 Page Template</title>
-    <script type="text/javascript" src="//code.jquery.com/jquery-latest.min.js"></script>
-    <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/d3.v3.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/lodash/lodash.js"></script>
     <script type="text/javascript" src="/js/mousewheel.js"></script>
     <script type="text/javascript" src="/js/box.js"></script>
     <script type="text/javascript" src="/js/config.js"></script>
-    <link rel="stylesheet" href="/css/bootstrap.css">
-    <link rel="stylesheet" href="/css/main.css">
+    <script type="text/javascript" src="/js/d3-time/build/d3-time.min.js"></script>
+    <script type="text/javascript" src="/js/d3-time-format/build/d3-time-format.min.js"></script>
+
+    <link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="/css/roboto.css" rel="stylesheet" type="text/css">
+    <link href="/css/main.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <div class="navbar navbar-default navbar-fixed-top">
@@ -24,24 +29,17 @@
             </button>
         </div>
         <div class="navbar-collapse collapse" id="navbar-main">
-            <ul class="nav navbar-nav">
-                <li>
-                    <a href="#" class="hidden" id="draw-stacked-chart">Back</a>
-                </li>
-            </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="download">Select category <span class="caret"></span></a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="run-dropdown">Run <span class="caret"></span></a>
                     <ul class="dropdown-menu" id="category-dropdown"></ul>
                 </li>
             </ul>
         </div>
     </div>
 </div>
-<div class="container main-container">
-<div class="main-chart"></div>
-<div class="detail-chart"></div>
-</div>
+<div class="well run-label">Results: <span></span></div>
+<div class="container main-container"></div>
 <script src="/js/main.js" type="text/javascript"></script>
 </body>
 </html>

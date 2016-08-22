@@ -1,70 +1,87 @@
 [
-  {"category":"1","id":"1", "num":"50"},
-  {"category":"1","id":"2", "num":"40"},
-  {"category":"1","id":"3", "num":"40"},
-
-  {"category":"2","id":"1", "num":"50"},
-  {"category":"2","id":"2", "num":"30"},
-  {"category":"2","id":"3", "num":"45"},
-
-  {"category":"3","id":"1", "num":"10"},
-  {"category":"3","id":"2", "num":"20"},
-  {"category":"3","id":"3", "num":"30"},
-  {"category":"3","id":"4", "num":"50"},
-
-  {"category":"4","id":"1", "num":"15"},
-  {"category":"4","id":"2", "num":"35"},
-  {"category":"4","id":"3", "num":"45"},
-  {"category":"4","id":"4", "num":"55"},
-
-  {"category":"5","id":"1", "num":"10"},
-  {"category":"5","id":"2", "num":"25"},
-  {"category":"5","id":"3", "num":"55"},
-  {"category":"5","id":"4", "num":"15"},
-
-  {"category":"6","id":"1", "num":"25"},
-  {"category":"6","id":"2", "num":"20"},
-  {"category":"6","id":"3", "num":"15"},
-  {"category":"6","id":"4", "num":"30"},
-
-  {"category":"7","id":"1", "num":"10"},
-  {"category":"7","id":"2", "num":"10"},
-  {"category":"7","id":"3", "num":"15"},
-
-  {"category":"8","id":"1", "num":"25"},
-  {"category":"8","id":"2", "num":"55"},
-  {"category":"8","id":"3", "num":"45"},
-
-  {"category":"9","id":"1", "num":"10"},
-  {"category":"9","id":"2", "num":"15"},
-  {"category":"9","id":"3", "num":"35"},
-  {"category":"9","id":"4", "num":"50"},
-
-  {"category":"10","id":"1", "num":"10"},
-  {"category":"10","id":"2", "num":"18"},
-  {"category":"10","id":"3", "num":"33"},
-  {"category":"10","id":"4", "num":"49"},
-
-  {"category":"11","id":"1", "num":"16"},
-  {"category":"11","id":"2", "num":"35"},
-  {"category":"11","id":"3", "num":"43"},
-  {"category":"11","id":"4", "num":"22"},
-
-  {"category":"12","id":"1", "num":"25"},
-  {"category":"12","id":"2", "num":"35"},
-  {"category":"12","id":"3", "num":"45"},
-  {"category":"12","id":"4", "num":"15"},
-
-  {"category":"13","id":"1", "num":"25"},
-  {"category":"13","id":"2", "num":"40"},
-  {"category":"13","id":"3", "num":"35"},
-
-  {"category":"14","id":"1", "num":"15"},
-  {"category":"14","id":"2", "num":"20"},
-  {"category":"14","id":"3", "num":"45"},
-
-  {"category":"15","id":"1", "num":"10"},
-  {"category":"15","id":"2", "num":"28"},
-  {"category":"15","id":"3", "num":"34"},
-  {"category":"15","id":"4", "num":"60"}
+  {
+    "run_name":"run1",
+    "Shoe_array":[
+      {
+        "shoe_name": "shoe1",
+        "game_array": [
+          {
+            "game_name": "gameA",
+            "metric_array": [
+              {
+                "Ts": "12:13:32",
+                "speed": 10,
+                "val": 2
+              },
+              {
+                "Ts": "12:13:35",
+                "speed": 20,
+                "val": 3
+              }
+            ]
+          },
+          {
+            "game_name": "gameB",
+            "metric_array": [
+              {
+                "Ts": "12:13:32",
+                "speed": 15,
+                "val": 1
+              },
+              {
+                "Ts": "12:13:33",
+                "speed": 25,
+                "val": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "shoe_name": "shoe2",
+        "game_array": [
+          {
+            "game_name": "gameC",
+            "metric_array": [
+              {
+                "Ts": "12:13:32",
+                "speed": 10,
+                "val": 3
+              },
+              {
+                "Ts": "12:13:32",
+                "speed": 15,
+                "val": 5
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "run_name":"run2",
+    "Shoe_array":[
+      {
+        "shoe_name": "shoe1",
+        "game_array": [
+          {
+            "game_name": "gameA",
+            "metric_array": [
+              {
+                "Ts": "12:13:32",
+                "speed": 10,
+                "val": 1
+              },
+              {
+                "Ts": "12:13:32",
+                "speed": 20,
+                "val": 4
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 ]

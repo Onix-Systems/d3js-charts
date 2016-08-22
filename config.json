@@ -1,0 +1,32 @@
+{
+  "runs":["run1","run2"],
+  "mapping":[
+    {
+      "run_name":"run1",
+      "metrics" : ["speed", "val"],
+      "drill_down_metric":[
+        {
+          "speed" : "bar_chart",
+          "val" : "line_chart"
+        }],
+      "aggregated_metric":[
+        {
+          "speed" : "box_chart",
+          "val" : "bar_chart"
+        }]
+    },
+    {
+      "run_name":"run2",
+      "metrics" : ["speed", "val"],
+      "drill_down_metric": [
+        {
+          "speed" : "line_chart",
+          "val" : "line_chart"
+        }],
+      "aggregated_metric": [
+        {
+          "speed" : "box_chart",
+          "val" : "bar_chart"
+        }]
+    }]
+}
