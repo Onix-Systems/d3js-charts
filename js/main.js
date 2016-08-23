@@ -224,23 +224,11 @@ $.ajax({
                             // the y-axis
                             var y = d3.scale.linear()
                                 .domain([min, max])
-                                .range([height + margin.top, 10 + margin.top]);
+                                .range([height + margin.top, 00 + margin.top]);
 
                             var yAxis = d3.svg.axis()
                                 .scale(y)
                                 .orient("left");
-
-                            // draw the boxplots
-                            svg.selectAll(".box")
-                                .data(data)
-                                .enter().append("g")
-                                .attr('data-id', function (d) {
-                                    return (d[0]);
-                                })
-                                .attr("transform", function (d) {
-                                    return "translate(" + x(d[0]) + "," + margin.top + ")";
-                                })
-                                .call(chart.width(x.rangeBand()));
 
                             // draw y axis
                             svg.append("g")
@@ -267,6 +255,18 @@ $.ajax({
                                 .style("text-anchor", "middle")
                                 .style("font-size", "16px")
                                 .text("game");
+
+                            // draw the boxplots
+                            svg.selectAll(".box")
+                                .data(data)
+                                .enter().append("g")
+                                .attr('data-id', function (d) {
+                                    return (d[0]);
+                                })
+                                .attr("transform", function (d) {
+                                    return "translate(" + x(d[0]) + "," + margin.top + ")";
+                                })
+                                .call(chart.width(x.rangeBand()));
 
                             d3.selectAll("g.y.axis g.tick")
                                 .append("line")
@@ -369,6 +369,31 @@ $.ajax({
                             .append("g")
                             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+                        svg.append("g")
+                            .attr("class", "x axis")
+                            .attr("transform", "translate(0," + height + ")")
+                            .call(xAxis)
+                            .append("text")             // text label for the x axis
+                            .attr("x", (width / 2))
+                            .attr("y", 35)
+                            .attr("dy", ".71em")
+                            .style("text-anchor", "middle")
+                            .style("font-size", "16px")
+                            .text("game");
+
+                        svg.append("g")
+                            .attr("class", "y axis")
+                            .attr("transform", "translate(0,0)")
+                            .call(yAxis)
+                            .append("text") // and text1
+                            .attr("transform", "rotate(-90)")
+                            .attr("y", 0 - margin.left)
+                            .attr("x", 0 - (height / 2) + margin.top)
+                            .attr("dy", ".71em")
+                            .style("text-anchor", "end")
+                            .style("font-size", "16px")
+                            .text(current_metric);
+
                         var layer = svg.selectAll(".layer")
                             .data(layers)
                             .enter().append("g")
@@ -401,31 +426,6 @@ $.ajax({
                             .attr("height", function (d) {
                                 return y(d.y0) - y(d.y0 + d.y);
                             });
-
-                        svg.append("g")
-                            .attr("class", "x axis")
-                            .attr("transform", "translate(0," + height + ")")
-                            .call(xAxis)
-                            .append("text")             // text label for the x axis
-                            .attr("x", (width / 2))
-                            .attr("y", 35)
-                            .attr("dy", ".71em")
-                            .style("text-anchor", "middle")
-                            .style("font-size", "16px")
-                            .text("game");
-
-                        svg.append("g")
-                            .attr("class", "y axis")
-                            .attr("transform", "translate(0,0)")
-                            .call(yAxis)
-                            .append("text") // and text1
-                            .attr("transform", "rotate(-90)")
-                            .attr("y", 0 - margin.left)
-                            .attr("x", 0 - (height / 2) + margin.top)
-                            .attr("dy", ".71em")
-                            .style("text-anchor", "end")
-                            .style("font-size", "16px")
-                            .text(current_metric);
 
                         d3.selectAll("g.y.axis g.tick")
                             .append("line")
